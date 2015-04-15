@@ -10,11 +10,11 @@ def youtube_meta(client, channel, nick, message, match):
     """ Return meta information about a video """
     v = scrape_url('http://' + match[0])
     if v.like and v.dislike:
-        ratio = math.floor(v.like * 100 / float(v.dislike))
+        ratio = "%.2f" % (v.like / float(v.dislike))
     elif v.like:
         ratio = 'infinite'
     elif v.dislike:
         ratio = '0'
     else:
-        ratio = 'unknown'
+        ratio = 'N/A'
     return TEMPLATE.format(v.title, v.poster, v.published, v.views, ratio)
