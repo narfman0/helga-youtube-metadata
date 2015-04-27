@@ -1,13 +1,38 @@
 """ Plugin entry point for helga """
-import math
-from youtube_scraper.scraper import scrape_url
+from datetime import timedelta
+from dateutil.parser import parse as parse_date
+import requests, re
 from helga.plugins import match
+from helga import settings
 
-TEMPLATE = 'Title: {}, poster: {}, date: {}, views: {}, likes: {}, dislikes: {}'
+REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
+RESPONSE_TEMPLATE = ("Title: {}, poster: {}, date: {}, views: {}, likes: {}, "
+                     "dislikes: {}, duration: {}")
+API_ROOT = 'https://www.googleapis.com/youtube/v3/'
+API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', 'NO_API_KEY')
+DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
+NON_DECIMAL = re.compile(r'[^\d]+')
 
-@match(r'(youtu\.be/|youtube\.com/watch\?v=)\w+')
+@match(r'(youtu\.be/|youtube\.com/watch\?v=)(\w+)')
 def youtube_meta(client, channel, nick, message, match):
     """ Return meta information about a video """
-    v = scrape_url('http://' + match[0])
-    return TEMPLATE.format(v.title, v.poster, v.published, v.views, v.likes,
-                           v.dislikes)
+    request_url = REQUEST_TEMPLATE.format(API_ROOT, match[0][1], API_KEY)
+    data = requests.get(request_url).json()['items'][0]
+    title = data['snippet']['title']
+    poster = data['snippet']['channelTitle']
+    date = str(parse_date(data['snippet']['publishedAt']))
+    views = data['statistics']['viewCount']
+    likes = data['statistics']['likeCount']
+    dislikes = data['statistics']['dislikeCount']
+    duration = parse_duration(data['contentDetails']['duration'])
+    return RESPONSE_TEMPLATE.format(title, poster, date, views, likes, dislikes, duration)
+
+def parse_duration(duration):
+    """ Parse and prettify duration from youtube duration format """
+    duration_dict = re.search(DURATION_REGEX, duration).groupdict()
+    converted_dict = {}
+    # convert all values to ints, remove nones
+    for a, x in duration_dict.iteritems():
+        if x is not None:
+            converted_dict[a] = int(NON_DECIMAL.sub('', x))
+    return str(timedelta(**converted_dict))

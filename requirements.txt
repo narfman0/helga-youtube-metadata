@@ -1,1 +1,3 @@
-youtube-scraper
+google-api-python-client
+python-dateutil
+requests
