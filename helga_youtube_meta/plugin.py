@@ -13,7 +13,7 @@ API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', 'NO_API_KEY')
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
 
-@match(r'(youtu\.be/|youtube\.com/watch\?v=)(\w+)')
+@match(r'(youtu\.be/|youtube\.com/watch\?v=)([-\w]+)')
 def youtube_meta(client, channel, nick, message, match):
     """ Return meta information about a video """
     request_url = REQUEST_TEMPLATE.format(API_ROOT, match[0][1], API_KEY)
