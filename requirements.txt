@@ -1,2 +1,3 @@
 python-dateutil
 requests
+parse-requirements-not-suckily

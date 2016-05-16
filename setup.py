@@ -1,10 +1,7 @@
-from pip.req import parse_requirements
+from parse_requirements_not_suckily import parse_requirements
 from setuptools import setup, find_packages
 from helga_youtube_meta import __version__ as version
 
-requirements = [
-    str(req.req) for req in parse_requirements('requirements.txt')
-]
 
 setup(
     name='helga-youtube-meta',
@@ -27,9 +24,9 @@ setup(
     include_package_data=True,
     py_modules=['helga_youtube_meta.plugin'],
     zip_safe=True,
-    install_requires=requirements,
+    install_requires=parse_requirements(),
     test_suite='',
-    entry_points = dict(
+    entry_points=dict(
         helga_plugins=[
             'youtube-meta = helga_youtube_meta.plugin:youtube_meta',
         ],
