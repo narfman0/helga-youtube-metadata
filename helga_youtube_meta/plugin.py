@@ -11,7 +11,6 @@ from helga import settings
 
 
 REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
-RESPONSE_TEMPLATE = ("{} by {} [{}]")
 API_ROOT = 'https://www.googleapis.com/youtube/v3/videos'
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
@@ -45,7 +44,7 @@ def youtube_meta(client, channel, nick, message, match):
     likes = data['statistics']['likeCount']
     dislikes = data['statistics']['dislikeCount']
     duration = parse_duration(data['contentDetails']['duration'])
-    return RESPONSE_TEMPLATE.format(title, poster, duration)
+    return u'{} by {} [{}]'.format(title, poster, duration).encode('utf-8').strip()
 
 
 def parse_duration(duration):
