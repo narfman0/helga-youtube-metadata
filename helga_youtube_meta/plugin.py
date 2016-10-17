@@ -12,7 +12,7 @@ from helga import settings
 
 REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
 RESPONSE_TEMPLATE = ("{} by {} [{}]")
-API_ROOT = 'https://www.googleapis.com/youtube/v3/'
+API_ROOT = 'https://www.googleapis.com/youtube/v3/videos'
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
 
@@ -26,6 +26,7 @@ def youtube_meta(client, channel, nick, message, match):
     params = {
         'id': identifier,
         'key': getattr(settings, 'YOUTUBE_DATA_API_KEY', 'NO_API_KEY'),
+        'part': 'snippet,statistics,contentDetails',
     }
     response = requests.get(API_ROOT, params=params)
 
