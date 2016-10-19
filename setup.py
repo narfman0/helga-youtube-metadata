@@ -1,4 +1,3 @@
-from parse_requirements_not_suckily import parse_requirements
 from setuptools import setup, find_packages
 from helga_youtube_meta import __version__ as version
 
@@ -24,7 +23,10 @@ setup(
     include_package_data=True,
     py_modules=['helga_youtube_meta.plugin'],
     zip_safe=True,
-    install_requires=parse_requirements(),
+    install_requires=[
+        'python-dateutil',
+        'requests',
+    ],
     test_suite='',
     entry_points=dict(
         helga_plugins=[
