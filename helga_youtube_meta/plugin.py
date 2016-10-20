@@ -44,7 +44,7 @@ def youtube_meta(client, channel, nick, message, match):
     likes = data['statistics']['likeCount']
     dislikes = data['statistics']['dislikeCount']
     duration = parse_duration(data['contentDetails']['duration'])
-    return u'{} by {} [{}]'.format(title, poster, duration).encode('utf-8').strip()
+    return u'\'{}\' by {} [{}]'.format(title, poster, duration).encode('utf-8').strip()
 
 
 def parse_duration(duration):
