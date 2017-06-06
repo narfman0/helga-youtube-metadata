@@ -10,6 +10,3 @@ matrix:
 install: pip install -r requirements_test.txt
 
 script: tox -e $TOX_ENV
-
-services:
-  - mongodb
