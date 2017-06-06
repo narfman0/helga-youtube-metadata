@@ -17,7 +17,7 @@ setup(
     keywords='irc bot youtube-meta',
     author='Jon Robison',
     author_email='narfman0@gmail.com',
-    url='https://youtube.com/narfman0/helga-youtube-meta',
+    url='https://github.com/narfman0/helga-youtube-metadata',
     license='LICENSE',
     packages=find_packages(),
     include_package_data=True,

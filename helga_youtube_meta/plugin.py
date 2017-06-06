@@ -13,8 +13,9 @@ from helga import settings
 REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
 RESPONSE_TEMPLATE = ("Title: {}, poster: {}, date: {}, views: {}, likes: {}, "
                      "dislikes: {}, duration: {}")
+KEY_MISSING_TOKEN = 'NO_API_KEY'
 API_ROOT = 'https://www.googleapis.com/youtube/v3/'
-API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', 'NO_API_KEY')
+API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', KEY_MISSING_TOKEN)
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
 
@@ -22,6 +23,8 @@ NON_DECIMAL = re.compile(r'[^\d]+')
 @match(r'(?:youtu\.be/|youtube\.com/watch\?v=)([-\w]+)')
 def youtube_meta(client, channel, nick, message, match):
     """ Return meta information about a video """
+    if API_KEY == KEY_MISSING_TOKEN:
+        return 'You must set YOUTUBE_DATA_API_KEY in settings!'
     identifier = match[0]
     request_url = REQUEST_TEMPLATE.format(API_ROOT, identifier, API_KEY)
     response = requests.get(request_url)
