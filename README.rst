@@ -3,8 +3,8 @@ helga-youtube-meta
 
 Provide information for youtube related metadata
 
-.. image:: https://badge.fury.io/py/helga-youtube-metadata.png
-    :target: https://badge.fury.io/py/helga-youtube-metadata
+.. image:: https://badge.fury.io/py/helga-youtube-meta.png
+    :target: https://badge.fury.io/py/helga-youtube-meta
 
 .. image:: https://travis-ci.org/narfman0/helga-youtube-metadata.png?branch=master
     :target: https://travis-ci.org/narfman0/helga-youtube-metadata
