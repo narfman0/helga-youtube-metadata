@@ -24,6 +24,7 @@ setup(
     py_modules=['helga_youtube_meta.plugin'],
     zip_safe=True,
     install_requires=[
+        'helga',
         'python-dateutil',
         'requests',
     ],
