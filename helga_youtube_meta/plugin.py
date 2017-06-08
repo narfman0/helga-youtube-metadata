@@ -10,12 +10,16 @@ from helga.plugins import match
 from helga import settings
 
 
-REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
-RESPONSE_TEMPLATE = ("{} by {} [{}]")
 API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', False)
 API_ROOT = 'https://www.googleapis.com/youtube/v3/videos'
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
+REQUEST_TEMPLATE = '{}videos?id={}&key={}&part=snippet,statistics,contentDetails'
+RESPONSE_TEMPLATE = ("{} by {} [{}]")
+RESPONSE_TEMPLATE = getattr(settings, 'YOUTUBE_META_RESPONSE',
+                            ("Title: {title}, poster: {poster}, date: {date},"
+                             "views: {views}, likes: {likes}, dislikes: {dislikes},"
+                             "duration: {duration}"))
 
 
 @match(r'(?:youtu\.be/|youtube\.com/watch\?(?:(?:\S+)&)?v=)([-\w]+)')
@@ -39,14 +43,17 @@ def youtube_meta(client, channel, nick, message, match):
         print('Exception requesting info for identifier: ' + identifier)
         traceback.print_exc()
 
-    title = data['snippet']['title']
-    poster = data['snippet']['channelTitle']
-    date = str(parse_date(data['snippet']['publishedAt']))
-    views = data['statistics']['viewCount']
-    likes = data['statistics']['likeCount']
-    dislikes = data['statistics']['dislikeCount']
-    duration = parse_duration(data['contentDetails']['duration'])
-    return RESPONSE_TEMPLATE.format(title, poster, duration)
+    response_dict = {
+        'title': data['snippet']['title'],
+        'poster': data['snippet']['channelTitle'],
+        'date': str(parse_date(data['snippet']['publishedAt'])),
+        'views': data['statistics']['viewCount'],
+        'likes': data['statistics']['likeCount'],
+        'dislikes': data['statistics']['dislikeCount'],
+        'duration': parse_duration(data['contentDetails']['duration']),
+    }
+
+    return RESPONSE_TEMPLATE.format(**response_dict).encode('utf-8').strip()
 
 
 def parse_duration(duration):
