@@ -14,13 +14,15 @@ API_KEY = getattr(settings, 'YOUTUBE_DATA_API_KEY', False)
 API_ROOT = 'https://www.googleapis.com/youtube/v3/videos'
 DURATION_REGEX = r'P(?P<days>[0-9]+D)?T(?P<hours>[0-9]+H)?(?P<minutes>[0-9]+M)?(?P<seconds>[0-9]+S)?'
 NON_DECIMAL = re.compile(r'[^\d]+')
+MATCH_DEFAULT = r'(?:youtu\.be/|youtube\.com/watch\?(?:(?:\S+)&)?v=)([-\w]+)'
+MATCH_REGEX = getattr(settings, 'YOUTUBE_META_MATCH_REGEX', MATCH_DEFAULT)
 RESPONSE_TEMPLATE = getattr(settings, 'YOUTUBE_META_RESPONSE',
                             ("Title: {title}, poster: {poster}, date: {date},"
                              "views: {views}, likes: {likes}, dislikes: {dislikes},"
                              "duration: {duration}"))
 
 
-@match(r'(?:youtu\.be/|youtube\.com/watch\?(?:(?:\S+)&)?v=)([-\w]+)')
+@match(MATCH_REGEX)
 def youtube_meta(client, channel, nick, message, match):
     """ Return meta information about a video """
     if not API_KEY:
